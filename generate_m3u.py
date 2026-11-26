@@ -1,15 +1,9 @@
-import os
 from curl_cffi import requests
 
-API_URL = os.environ.get("API_URL")
-API_KEY = os.environ.get("API_KEY")
+API_URL = "https://englishpr.assadikb.workers.dev/"
 OUTPUT_FILE = "playlist.m3u"
 
-if not API_URL:
-    raise ValueError("API_URL secret set kora hoyni!")
-
 HEADERS = {
-    "API-KEY": API_KEY or "",
     "Accept": "application/json, text/plain, */*",
     "Accept-Language": "en-US,en;q=0.9",
 }
@@ -20,7 +14,6 @@ def clean_text(text):
     return str(text).replace("\n", " ").replace("\r", "").strip()
 
 def build_m3u():
-    # Real Chrome browser impersonate kore request pathabe
     response = requests.get(
         API_URL,
         headers=HEADERS,
