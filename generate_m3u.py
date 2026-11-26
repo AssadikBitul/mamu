@@ -1,5 +1,5 @@
 import os
-import requests
+from curl_cffi import requests
 
 API_URL = os.environ.get("API_URL")
 API_KEY = os.environ.get("API_KEY")
@@ -8,13 +8,10 @@ OUTPUT_FILE = "playlist.m3u"
 if not API_URL:
     raise ValueError("API_URL secret set kora hoyni!")
 
-# OXOO / Android app-er standard headers
 HEADERS = {
-    "User-Agent": "okhttp/4.12.0",
     "API-KEY": API_KEY or "",
-    "Accept": "application/json",
-    "Accept-Encoding": "gzip",
-    "Connection": "Keep-Alive"
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.9",
 }
 
 def clean_text(text):
@@ -23,9 +20,14 @@ def clean_text(text):
     return str(text).replace("\n", " ").replace("\r", "").strip()
 
 def build_m3u():
-    response = requests.get(API_URL, headers=HEADERS, timeout=30)
-    
-    # 403 ashle exact ki bolche seta log-e dekhar jonno
+    # Real Chrome browser impersonate kore request pathabe
+    response = requests.get(
+        API_URL,
+        headers=HEADERS,
+        impersonate="chrome124",
+        timeout=30
+    )
+
     if response.status_code != 200:
         print(f"Status Code: {response.status_code}")
         print(f"Response Preview: {response.text[:300]}")
