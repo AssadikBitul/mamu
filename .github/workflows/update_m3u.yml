@@ -20,8 +20,8 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install requests
-        run: pip install requests
+      - name: Install curl_cffi
+        run: pip install curl_cffi
 
       - name: Generate M3U
         env:
