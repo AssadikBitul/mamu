@@ -8,9 +8,13 @@ OUTPUT_FILE = "playlist.m3u"
 if not API_URL:
     raise ValueError("API_URL secret set kora hoyni!")
 
+# OXOO / Android app-er standard headers
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    "API-KEY": API_KEY or ""
+    "User-Agent": "okhttp/4.12.0",
+    "API-KEY": API_KEY or "",
+    "Accept": "application/json",
+    "Accept-Encoding": "gzip",
+    "Connection": "Keep-Alive"
 }
 
 def clean_text(text):
@@ -20,7 +24,13 @@ def clean_text(text):
 
 def build_m3u():
     response = requests.get(API_URL, headers=HEADERS, timeout=30)
-    response.raise_for_status()
+    
+    # 403 ashle exact ki bolche seta log-e dekhar jonno
+    if response.status_code != 200:
+        print(f"Status Code: {response.status_code}")
+        print(f"Response Preview: {response.text[:300]}")
+        response.raise_for_status()
+
     data = response.json()
 
     lines = ["#EXTM3U"]
